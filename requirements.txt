@@ -1,0 +1,14 @@
+1. Todo List Manager (File-Based) 
+Description: 
+Build a command-line application to manage a todo list. The data should be stored in a file 
+(e.g., JSON file), and users can add, remove, and view tasks. 
+Features: 
+1. Add a task with a description and due date. 
+2. Mark a task as completed. 
+3. Remove a task by ID. 
+4. List all tasks (completed and pending separately). 
+5. Save all tasks to a JSON file and load them on startup. 
+Focus Areas: 
+● File system (FS module) for reading/writing JSON. 
+● CLI input handling (process.stdin and process.stdout). 
+● Modular design with classes for Task and TodoManager.
