@@ -14,5 +14,9 @@
   ],
   "author": "Sherif Ibrahim",
   "license": "ISC",
-  "description": "A simple CLI Todo application with file-based storage"
+  "description": "A simple CLI Todo application with file-based storage",
+  "dependencies": {
+    "boxen": "^5.1.2",
+    "chalk": "^4.1.2"
+  }
 }

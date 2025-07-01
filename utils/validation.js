@@ -1,4 +1,5 @@
 "use strict";
+const chalk = require("chalk");
 
 /**
  * Validates if a date string is in YYYY-MM-DD format and not in the past
@@ -58,20 +59,20 @@ function validateDescription(description) {
  * @param {Function} callback - Callback function with boolean result
  */
 function confirmAction(rl, message, callback) {
-  rl.question(`${message} (y/N): `, (answer) => {
+  rl.question(chalk.yellow(`${message} (y/N): `), (answer) => {
     if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
       callback(true);
     } else {
-      console.log("Action cancelled.");
+      console.log(chalk.gray("Action cancelled."));
       callback(false);
     }
   });
 }
 
 /**
- * Formats a date for display
+ * Formats a date for display with color coding
  * @param {string} dateString - Date string in YYYY-MM-DD format
- * @returns {string} - Formatted date string
+ * @returns {string} - Formatted and colored date string
  */
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -80,13 +81,13 @@ function formatDate(dateString) {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   if (date.toDateString() === today.toDateString()) {
-    return "Today";
+    return chalk.yellow.bold("Today");
   } else if (date.toDateString() === tomorrow.toDateString()) {
-    return "Tomorrow";
+    return chalk.blue.bold("Tomorrow");
   } else if (date < today) {
-    return `Overdue (${dateString})`;
+    return chalk.red.bold(`Overdue (${dateString})`);
   } else {
-    return dateString;
+    return chalk.green(dateString);
   }
 }
 
@@ -95,7 +96,7 @@ function formatDate(dateString) {
  * @param {string} message - Error message to display
  */
 function showError(message) {
-  console.log(`❌ ${message}`);
+  console.log(chalk.red(`❌ ${message}`));
 }
 
 /**
@@ -103,7 +104,7 @@ function showError(message) {
  * @param {string} message - Success message to display
  */
 function showSuccess(message) {
-  console.log(`✅ ${message}`);
+  console.log(chalk.green(`✅ ${message}`));
 }
 
 module.exports = {

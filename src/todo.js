@@ -1,5 +1,9 @@
 "use strict";
 const readline = require("readline");
+
+const chalk = require("chalk");
+const boxen = require("boxen");
+
 const TodoManager = require("./todomanager");
 const {
   isValidDate,
@@ -20,17 +24,33 @@ const rl = readline.createInterface({
 
 function showMenu() {
   setTimeout(() => {
-    console.log(`
-    What would you like to do?
-    1. Add a new task
-    2. Mark a task as Completed
-    3. Remove a task
-    4. View all tasks
-    5. Exit Application
-    ---------------
-    `);
+    const menuContent =
+      chalk.cyan.bold("📋 TODO APP MENU") +
+      "\n\n" +
+      chalk.white("1.") +
+      chalk.green(" Add a new task") +
+      "\n" +
+      chalk.white("2.") +
+      chalk.yellow(" Mark a task as Completed") +
+      "\n" +
+      chalk.white("3.") +
+      chalk.red(" Remove a task") +
+      "\n" +
+      chalk.white("4.") +
+      chalk.blue(" View all tasks") +
+      "\n" +
+      chalk.white("5.") +
+      chalk.magenta(" Exit Application");
 
-    rl.question("Choose an option: ", handleMenu);
+    const menuBox = boxen(menuContent, {
+      padding: 1,
+      margin: 1,
+      borderStyle: "round",
+      borderColor: "cyan",
+    });
+
+    console.log(menuBox);
+    rl.question(chalk.cyan("Choose an option: "), handleMenu);
   }, 2000);
 }
 
@@ -49,7 +69,7 @@ function handleMenu(option) {
       displayAllTasks();
       break;
     case "5":
-      console.log("Goodbye!");
+      console.log(chalk.green.bold("👋 Goodbye! Stay productive! ✨"));
       rl.close();
       break;
     default:
@@ -198,41 +218,81 @@ function removeTaskWithValidation() {
 function displayAllTasks() {
   const { pending, completed } = manager.listTasks();
 
-  console.log("\n--- Pending Tasks ---");
+  // Pending Tasks Section
+  const pendingTitle = chalk.yellow.bold("⏳ PENDING TASKS");
+  console.log(`\n${pendingTitle}`);
+  console.log(chalk.gray("─".repeat(40)));
+
   if (pending.length === 0) {
-    console.log("No pending tasks.");
+    console.log(chalk.gray("No pending tasks."));
   } else {
     pending.forEach((t) => {
-      console.log(`[${t.id}] ${t.description} (Due: ${formatDate(t.dueDate)})`);
-    });
-  }
-
-  console.log("\n--- Completed Tasks ---");
-  if (completed.length === 0) {
-    console.log("No completed tasks yet.");
-  } else {
-    completed.forEach((t) => {
       console.log(
-        `[${t.id}] ✅ ${t.description} (Due: ${formatDate(t.dueDate)})`
+        chalk.white(`[${chalk.yellow(t.id)}] `) +
+          chalk.cyan(t.description) +
+          chalk.gray(" (Due: ") +
+          formatDate(t.dueDate) +
+          chalk.gray(")")
       );
     });
   }
 
-  rl.question("\nPress Enter to return to the menu...", () => {
+  // Completed Tasks Section
+  const completedTitle = chalk.green.bold("✅ COMPLETED TASKS");
+  console.log(`\n${completedTitle}`);
+  console.log(chalk.gray("─".repeat(40)));
+
+  if (completed.length === 0) {
+    console.log(chalk.gray("No completed tasks yet."));
+  } else {
+    completed.forEach((t) => {
+      console.log(
+        chalk.white(`[${chalk.yellow(t.id)}] `) +
+          chalk.green("✅ ") +
+          chalk.cyan(t.description) +
+          chalk.gray(" (Due: ") +
+          chalk.gray(formatDate(t.dueDate)) +
+          chalk.gray(")")
+      );
+    });
+  }
+
+  rl.question(chalk.cyan("\nPress Enter to return to the menu..."), () => {
     showMenu();
   });
 }
 
 // Main application loop
 function startApp() {
-  // Welcome user
-  console.log(`
-    Welcome to my To-Do App!🤗
-    Conquer your tasks🏁, stay productive⏳, and make every day count! 🚀😎✅
-    `);
+  const welcomeMessage =
+    chalk.cyan.bold("🚀 WELCOME TO MY TODO APP! 🚀") +
+    "\n\n" +
+    chalk.white("Conquer your tasks") +
+    chalk.green(" 🏁") +
+    "\n" +
+    chalk.white("Stay productive") +
+    chalk.yellow(" ⏳") +
+    "\n" +
+    chalk.white("Make every day count!") +
+    chalk.magenta(" ✨");
 
+  const welcomeBox = boxen(welcomeMessage, {
+    padding: 1,
+    margin: 1,
+    borderStyle: "round",
+    borderColor: "cyan",
+  });
+
+  console.log(welcomeBox);
   // Call mainMenu()
   showMenu();
 }
+
+// Graceful shutdown
+process.on("SIGINT", () => {
+  console.log("\n\nGracefully shutting down...");
+  rl.close();
+  process.exit(0);
+});
 
 startApp();
